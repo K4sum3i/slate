@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String?
+  username              String?
+  email                 String?                @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  limitLinks            Int                    @default(30)
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+  role                  String                 @default("USER")
+  blocked               Boolean                @default(false)
+  account               Account[]
+  sessions              Session[]
+  links                 Links[]
+  tags                  Tags[]
+}
+
+model TwoFactorConfirmation {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Links {
+  id          String      @id @default(cuid())
+  url         String
+  slug        String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  createdBy   User?       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId   String
+  clicks      Int
+  lastClicked DateTime?
+  tags        LinksTags[]
+
+  @@index(slug)
+  @@index([creatorId])
+}
+
+model Tags {
+  id        String      @id @default(cuid())
+  name      String
+  color     String?
+  createdAt DateTime    @default(now())
+  createdBy User?       @relation(fields: [creatorId], references: [id])
+  creatorId String
+  links     LinksTags[]
+
+  @@index([creatorId])
+}
+
+model LinksTags {
+  linkId String
+  tagId  String
+
+  link Links @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  tag  Tags  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([linkId, tagId])
+}
+
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model BlockedEmails {
+  id    String @id @default(cuid())
+  email String @unique
+}
