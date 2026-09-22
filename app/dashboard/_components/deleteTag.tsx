@@ -14,14 +14,14 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { removeTag } from "@/lib/actions/tags";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 
 export default function deleteTag({
   tag,
   trigger,
 }: {
   tag: Tags;
-  trigger: ReactNode;
+  trigger: React.ReactNode;
 }) {
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -47,7 +47,7 @@ export default function deleteTag({
     }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -57,7 +57,13 @@ export default function deleteTag({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button>{loading ? <Spinner /> : "Delete Tag"}</Button>
+          <Button
+            variant={"destructive"}
+            onClick={handleDeleteTag}
+            disabled={loading}
+          >
+            {loading ? <Spinner /> : "Delete Tag"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

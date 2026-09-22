@@ -7,10 +7,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CheckIcon, SearchXIcon, TagIcon, TagsIcon, XIcon } from "lucide-react";
+import {
+  CheckIcon,
+  PlusIcon,
+  SearchXIcon,
+  TagIcon,
+  TagsIcon,
+  XIcon,
+} from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import DeleteTag from "./deleteTag";
+import CreateTag from "./createTag";
 
 export default function searchTag({
   tags,
@@ -103,12 +111,12 @@ export default function searchTag({
             <SearchXIcon size={16} />
             <span>Clear search</span>
           </Button>
-          {/* <CreateTag tagsCreated={tags}>
+          <CreateTag tagsCreated={tags}>
             <Button variant="outline" className="w-full">
               <PlusIcon size={16} />
               <span>Create Tag</span>
             </Button>
-          </CreateTag> */}
+          </CreateTag>
         </div>
       </PopoverContent>
     </Popover>

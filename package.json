@@ -11,6 +11,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@base-ui/react": "^1.8.0",
+    "@hookform/resolvers": "^5.9.1",
     "@prisma/adapter-neon": "^7.10.0",
     "@prisma/client": "7.10.0",
     "@shadcn/react": "^0.3.1",
@@ -28,6 +29,7 @@
     "react": "19.2.8",
     "react-day-picker": "^10.0.1",
     "react-dom": "19.2.8",
+    "react-hook-form": "^7.88.0",
     "react-resizable-panels": "^4.12.4",
     "recharts": "3.8.0",
     "shadcn": "^4.21.0",
