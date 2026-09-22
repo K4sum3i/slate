@@ -32,10 +32,10 @@ export default function CreateTag({
   children: React.ReactNode;
   tagsCreated: Tags[];
 }) {
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [isError, setError] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [isError, setError] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof CreateTagSchema>>({
     resolver: zodResolver(CreateTagSchema),
