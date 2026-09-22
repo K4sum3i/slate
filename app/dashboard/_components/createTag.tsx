@@ -111,7 +111,7 @@ export default function CreateTag({
                     ></Input>
                   </Field>
                 )}
-              ></Controller>
+              />
             </FieldGroup>
           </div>
           <DialogFooter>

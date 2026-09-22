@@ -5,13 +5,7 @@ import { toast } from "@/components/ui/toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { ClipboardIcon } from "lucide-react";
 
-export default function copyLink({
-  slug,
-  className,
-}: {
-  slug: string;
-  className?: string;
-}) {
+export default function copyLink({ slug }: { slug: string }) {
   const [, copy] = useCopyToClipboard();
   const url = "http://localhost:3000";
 

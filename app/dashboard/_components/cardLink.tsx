@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/lib/utils/formatDate";
 import { cn } from "cn";
-import { ChevronDownIcon, CopyIcon, QrCodeIcon } from "lucide-react";
+import { ChevronDownIcon, CopyIcon, QrCodeIcon, SquarePen } from "lucide-react";
 import CopyLink from "./copyLink";
 import CopyQR from "./copyQR";
+import EditLink from "./editLink";
+import { Button } from "@/components/ui/button";
 
 export default function CardLink({
   linkInfo,
@@ -26,6 +28,10 @@ export default function CardLink({
   linkTags: LinksTags[];
   tagsInfo: Tags[];
 }) {
+  const cardTagsInfo = tagsInfo.filter((tag) =>
+    linkTags.some((linkTag) => linkTag.tagId === tag.id),
+  );
+
   return (
     <div className="flex w-full flex-col rounded-md border border-neutral p-3 shadow-sm dark:border-neutral-800">
       <div className="mb-1 flex w-full items-center justify-between space-x-2">
@@ -57,7 +63,16 @@ export default function CardLink({
             </DropdownMenu>
             <CopyQR linkInfo={linkInfo} />
           </Dialog>
-          {/* TODO EDITLINK */}
+          <EditLink
+            trigger={
+              <Button className={"transition-opacity hover:opacity-75"}>
+                <SquarePen size={16} />
+              </Button>
+            }
+            link={linkInfo}
+            linkTags={cardTagsInfo}
+            allTags={tagsInfo}
+          />
           {/* TODO DELETELINK */}
         </div>
       </div>
