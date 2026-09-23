@@ -13,10 +13,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/lib/utils/formatDate";
 import { cn } from "cn";
-import { ChevronDownIcon, CopyIcon, QrCodeIcon, SquarePen } from "lucide-react";
+import {
+  ChevronDownIcon,
+  CopyIcon,
+  QrCodeIcon,
+  SquarePen,
+  TrashIcon,
+} from "lucide-react";
 import CopyLink from "./copyLink";
 import CopyQR from "./copyQR";
 import EditLink from "./editLink";
+import DeleteLink from "./deleteLink";
+import ShowClick from "./showClick";
 import { Button } from "@/components/ui/button";
 
 export default function CardLink({
@@ -43,7 +51,11 @@ export default function CardLink({
           <span>{linkInfo.slug}</span>
         </a>
         <div className="flex items-center space-x-3">
-          {/* TODO SHOWCLICK */}
+          <ShowClick
+            numberOfClicks={linkInfo.clicks}
+            lastDate={linkInfo.lastClicked}
+            className="hidden border-r border-neutral-200 pr-2 dark:border-neutral-800 md:flex"
+          />
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -73,7 +85,14 @@ export default function CardLink({
             linkTags={cardTagsInfo}
             allTags={tagsInfo}
           />
-          {/* TODO DELETELINK */}
+          <DeleteLink
+            link={linkInfo}
+            trigger={
+              <Button className={"transition-opacity hover:opacity-75"}>
+                <TrashIcon size={16} />
+              </Button>
+            }
+          />
         </div>
       </div>
       <p
@@ -116,7 +135,12 @@ export default function CardLink({
           <p>{formatDate(linkInfo.createdAt)}</p>
         </div>
         <CollapsibleContent className={"flex flex-col"}>
-          <div className="my-2 p-2 shadow-sm">{/* TODO SHOWCLICK */}</div>
+          <div className="my-2 p-2 shadow-sm">
+            <ShowClick
+              numberOfClicks={linkInfo.clicks}
+              lastDate={linkInfo.lastClicked}
+            />
+          </div>
           {linkInfo.description && (
             <div className="p-2 shadow-sm">
               <p
