@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/toast";
+import Header from "@/components/layout/header";
 
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,24 +24,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={cn(
-        "h-full",
-        "antialiased",
-        geistSans.variable,
-        geistMono.variable,
-        "font-sans",
-        notoSans.variable,
-      )}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang="en">
+      <body
+        className={cn(
+          `font-sans ${notoSans.variable} ${geistMono.variable} antialiased`,
+          "bg-white dark:bg-neutral-900",
+          "selection:bg-neutral-200 dark:selection:bg-neutral-700",
+        )}
+      >
         <ThemeProvider
           attribute={"class"}
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
           {children}
           <Toaster />
         </ThemeProvider>
