@@ -1,9 +1,9 @@
 "use client";
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import { ClipboardIcon } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export default function copyLink({ slug }: { slug: string }) {
   const [, copy] = useCopyToClipboard();
@@ -27,9 +27,8 @@ export default function copyLink({ slug }: { slug: string }) {
       });
   };
   return (
-    <DropdownMenuItem onClick={handleCopy(`${url}/${slug}`)}>
-      <ClipboardIcon size={15} />
-      <span>Copy to clipboard</span>
-    </DropdownMenuItem>
+    <Button variant={"ghost"} onClick={handleCopy(`${url}/${slug}`)}>
+      <Copy size={16} />
+    </Button>
   );
 }

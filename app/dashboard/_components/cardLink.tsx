@@ -15,9 +15,9 @@ import { formatDate } from "@/lib/utils/formatDate";
 import { cn } from "cn";
 import {
   ChevronDownIcon,
-  CopyIcon,
+  EllipsisVertical,
+  PenLine,
   QrCodeIcon,
-  SquarePen,
   TrashIcon,
 } from "lucide-react";
 import CopyLink from "./copyLink";
@@ -56,16 +56,20 @@ export default function CardLink({
             lastDate={linkInfo.lastClicked}
             className="hidden border-r border-neutral-200 pr-2 dark:border-neutral-800 md:flex"
           />
+          <CopyLink slug={linkInfo.slug} />
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger
                 className={"transition-opacity hover:opacity-75"}
               >
-                <CopyIcon size={15} />
+                <EllipsisVertical size={15} />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <CopyLink slug={linkInfo.slug} />
                 <DialogTrigger>
+                  <DropdownMenuItem>
+                    <PenLine size={16} />
+                    <span>Edit</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>
                     <QrCodeIcon size={15} />
                     <span>Copy QR Code</span>
@@ -74,25 +78,13 @@ export default function CardLink({
               </DropdownMenuContent>
             </DropdownMenu>
             <CopyQR linkInfo={linkInfo} />
+            <EditLink
+              link={linkInfo}
+              linkTags={cardTagsInfo}
+              allTags={tagsInfo}
+            />
+            <DeleteLink link={linkInfo} />
           </Dialog>
-          <EditLink
-            trigger={
-              <Button className={"transition-opacity hover:opacity-75"}>
-                <SquarePen size={16} />
-              </Button>
-            }
-            link={linkInfo}
-            linkTags={cardTagsInfo}
-            allTags={tagsInfo}
-          />
-          <DeleteLink
-            link={linkInfo}
-            trigger={
-              <Button className={"transition-opacity hover:opacity-75"}>
-                <TrashIcon size={16} />
-              </Button>
-            }
-          />
         </div>
       </div>
       <p

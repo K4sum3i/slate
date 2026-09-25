@@ -64,6 +64,7 @@ interface createLinkResult {
 
 export const createLink = async (
   values: z.infer<typeof CreateLinkSchema>,
+  tagIds: string[] = [],
 ): Promise<createLinkResult> => {
   const currentUser = await auth();
 
@@ -103,6 +104,17 @@ export const createLink = async (
       creatorId: currentUser.user?.id,
     },
   });
+
+  const uniqueTagIds = [...new Set(tagIds)];
+  if (uniqueTagIds.length > 0) {
+    await db.linksTags.createMany({
+      data: uniqueTagIds.map((tagId) => ({
+        linkId: result.id,
+        tagId,
+      })),
+      skipDuplicates: true,
+    });
+  }
 
   revalidatePath("/");
   revalidatePath("/dashboard");

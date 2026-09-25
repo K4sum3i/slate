@@ -15,16 +15,16 @@ export default function header() {
         "bg-white dark:bg-neutral-900",
       )}
     >
-      <div
-        className={cn("flex w-full items-center justify-between", "container")}
-      >
+      <div className={cn("flex w-full items-center justify-between")}>
         <div className="flex items--center space-x-5">
           <div className="flex items-center space-x-1 pr-1 md:pr-4">
             <Link
               href={"/"}
               className="flex items-center space-x-3 transition-opacity hover:opacity-80 rtl:space-x-reverse"
             >
-              <span>Slate</span>
+              <span className="self-center whitespace-nowrap text-lg font-medium tracking-tight dark:text-white">
+                Slate
+              </span>
               <Badge className="hidden cursor-pointer md:block">Alpha</Badge>
             </Link>
           </div>

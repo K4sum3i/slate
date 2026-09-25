@@ -6,6 +6,8 @@ import CreateLink from "./_components/createLink";
 import { PackageOpenIcon, PlusIcon, SparklesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardLink from "./_components/cardLink";
+import Prueba from "./_components/prueba";
+import UserBlocked from "@/components/settings/userBlocked";
 
 export default async function Dashboardpage({
   searchParams,
@@ -34,10 +36,10 @@ export default async function Dashboardpage({
   });
 
   return (
-    <main className="w-full duration-500 animate-in fade-in-5 slide-in-from-bottom-2">
-      {/* {data.userData?.blocked && <UserBlocked />} */}
-      <header className="mb-5 flex w-full items-center space-x-2 md:justify-between">
-        <Searchlinks className="w-full md:w-72 md:max-w-72" />
+    <main className="mx-auto w-full max-w-[880px] px-5 pb-20 pt-7">
+      {data.userData?.blocked && <UserBlocked className="mb-3" />}
+      <header className="mb-4 flex flex-wrap items-center gap-2">
+        <Searchlinks className="relative min-w-[180px] flex-1" />
         <div className="flex items-center space-x-2">
           <LinksLimit userLinks={data.links.length} maxLinks={data.limit} />
           <SearchTag
@@ -45,6 +47,18 @@ export default async function Dashboardpage({
             tagSelected={searchTag!}
             tagName={searchTag}
           />
+          {filteredLinks.length > 0 && (
+            <CreateLink tags={data.tags} slug={searchLink}>
+              <Button variant={"outline"}>
+                <PlusIcon size={14} />
+                <span>
+                  {searchLink
+                    ? `Create a link with ${searchLink} slug`
+                    : "New link"}
+                </span>
+              </Button>
+            </CreateLink>
+          )}
         </div>
       </header>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-2">
@@ -65,6 +79,25 @@ export default async function Dashboardpage({
             );
           })}
       </div>
+      <div className="">
+        {filteredLinks
+          .sort((a, b) => {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          })
+          .map((link) => {
+            return (
+              <Prueba
+                key={link.id}
+                linkInfo={link}
+                linkTags={link.tags}
+                tagsInfo={data.tags}
+              />
+            );
+          })}
+      </div>
+
       {filteredLinks.length === 0 && (
         <div className="mt-4 flex flex-col items-center justify-center space-y-3 text-center">
           {searchLink ? (

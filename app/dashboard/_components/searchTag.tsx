@@ -61,7 +61,7 @@ export default function searchTag({
               })}
             </span>
           ) : (
-            <span className="hidden md:block">Select a tag</span>
+            <span className="hidden md:block">Tags</span>
           )}
         </Button>
       </PopoverTrigger>

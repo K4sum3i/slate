@@ -10,12 +10,20 @@ import UserMenu from "./userMenu";
 import SignOut from "./signOut";
 import { auth } from "@/auth";
 import { buttonVariants } from "../ui/button";
-import { Avatar } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export default async function userBtn() {
   const session = await auth();
+
+  const initials = session?.user.name
+    ?.trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
   if (!session?.user) {
     return (
@@ -41,7 +49,15 @@ export default async function userBtn() {
             size: "icon",
           })}
         >
-          {session?.user.name && <Avatar />}
+          {session?.user.name && (
+            <Avatar>
+              <AvatarImage
+                src={session?.user?.image ?? undefined}
+                alt="profile Image"
+              />
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className={"w-56"} align="end">
           <DropdownMenuGroup>

@@ -88,13 +88,14 @@ export default function CreateLink({
         return;
       }
 
-      const result = await createLink(values);
+      const result = await createLink(values, selectedTags);
 
       if (result.error && result.limit) {
         toast.add({
           type: "info",
           description: `${result.error}`,
         });
+        return;
       }
 
       toast.add({
@@ -102,6 +103,7 @@ export default function CreateLink({
         description: "Creation link disabled for now",
       });
       form.reset();
+      setSelectedTags([]);
       setOpen(false);
     } catch (error) {
       toast.add({

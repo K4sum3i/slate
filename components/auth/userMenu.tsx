@@ -9,19 +9,19 @@ export default function userMenu() {
   return (
     <>
       <DropdownMenuItem>
-        <Link href={"/"}>
+        <Link href={"/"} className="flex items-center gap-2">
           <HomeIcon size={iconSize} />
           <span>Home</span>
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem>
-        <Link href={"/dashboard"}>
+        <Link href={"/dashboard"} className="flex items-center gap-2">
           <LayoutDashboardIcon size={iconSize} />
           <span>Dashboard</span>
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem>
-        <Link href={"/dashboard/settings"}>
+        <Link href={"/dashboard/settings"} className="flex items-center gap-2">
           <SettingsIcon size={iconSize} />
           <span>Settings</span>
         </Link>
