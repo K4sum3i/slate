@@ -39,7 +39,7 @@ export default async function Dashboardpage({
       {data.userData?.blocked && <UserBlocked className="mb-3" />}
       <header className="mb-4 flex flex-wrap items-center gap-2">
         <Searchlinks className="relative min-w-[180px] flex-1" />
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <LinksLimit userLinks={data.links.length} maxLinks={data.limit} />
           <SearchTag
             tags={data.tags}
@@ -48,7 +48,7 @@ export default async function Dashboardpage({
           />
           {filteredLinks.length > 0 && (
             <CreateLink tags={data.tags} slug={searchLink}>
-              <Button variant={"outline"}>
+              <Button variant={"outline"} size="sm">
                 <PlusIcon size={14} />
                 <span>
                   {searchLink
@@ -60,7 +60,7 @@ export default async function Dashboardpage({
           )}
         </div>
       </header>
-      <div className="border rounded-md overflow-hidden">
+      <div className="divide-y divide-border rounded-md border border-border">
         {filteredLinks
           .sort((a, b) => {
             return (
@@ -80,24 +80,26 @@ export default async function Dashboardpage({
       </div>
 
       {filteredLinks.length === 0 && (
-        <div className="mt-4 flex flex-col items-center justify-center space-y-3 text-center">
+        <div className="mt-4 flex flex-col items-center justify-center space-y-3 rounded-md border border-border py-12 text-center">
           {searchLink ? (
             <PackageOpenIcon size={48} strokeWidth={0.5} />
           ) : (
             <SparklesIcon size={48} strokeWidth={0.5} />
           )}
-          {searchLink ? (
-            <p>
-              No links found with{" "}
-              <span className="font-mono">{searchLink}</span>
-            </p>
-          ) : (
-            <p>
-              {searchTag ? "No links found with this tag" : "No links found"}
-            </p>
-          )}
+          <div className="space-y-1">
+            {searchLink ? (
+              <p>
+                No links found with{" "}
+                <span className="font-mono">{searchLink}</span>
+              </p>
+            ) : (
+              <p>
+                {searchTag ? "No links found with this tag" : "No links found"}
+              </p>
+            )}
+          </div>
           <CreateLink tags={data.tags} slug={searchLink}>
-            <Button variant={"outline"}>
+            <Button variant={"outline"} size="sm">
               <PlusIcon size={14} />
               <span>
                 {searchLink

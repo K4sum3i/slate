@@ -21,8 +21,6 @@ export default function Home() {
               href="/auth"
               className={buttonVariants({
                 size: "lg",
-                className:
-                  "group inline-flex items-center justify-center space-x-3 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-700 focus-visible:ring-neutral-500 bg-neutral-800 text-neutral-50 shadow hover:bg-neutral-800/90 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700/50 h-12 px-5",
               })}
             >
               Sign in
@@ -35,8 +33,6 @@ export default function Home() {
               className={buttonVariants({
                 variant: "secondary",
                 size: "lg",
-                className:
-                  "group relative inline-flex items-center justify-center space-x-3 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-700 focus-visible:ring-neutral-500 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:hover:border-neutral-700/50 h-12 rounded-md px-5",
               })}
             >
               <GitHub />

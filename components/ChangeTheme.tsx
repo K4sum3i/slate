@@ -19,9 +19,9 @@ export default function ChangeTheme() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button
-          className="inline-flex items-center space-x-0 justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-700 focus-visible:ring-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 h-9 w-9"
-          variant={"ghost"}
-          size={"icon-lg"}
+          variant="ghost"
+          size="icon-lg"
+          className="h-9 w-9"
           aria-label="Change theme"
           name="Change theme"
         >
@@ -44,21 +44,18 @@ export default function ChangeTheme() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className={"flex items-center space-x-1"}
             onClick={() => setTheme("light")}
           >
             <SunIcon size={16} />
             <span>Light</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className={"flex items-center space-x-1"}
             onClick={() => setTheme("dark")}
           >
             <MoonIcon size={16} />
             <span>Dark</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className={"flex items-center space-x-1"}
             onClick={() => setTheme("system")}
           >
             <Monitor size={16} />

@@ -13,6 +13,8 @@ import { buttonVariants } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import AccountDialog from "@/components/auth/settings";
+import { Dialog } from "../ui/dialog";
 
 export default async function userBtn() {
   const session = await auth();
@@ -32,8 +34,6 @@ export default async function userBtn() {
         className={buttonVariants({
           variant: "secondary",
           size: "lg",
-          className:
-            "group inline-flex items-center justify-center space-x-3 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-700 focus-visible:ring-neutral-500 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:hover:border-neutral-700/50 h-9 px-4 py-2",
         })}
       >
         <span className="text-sm">Get Started</span>
@@ -43,43 +43,46 @@ export default async function userBtn() {
   }
   if (session.user) {
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          name={session?.user.name ?? "User Menu"}
-          className={buttonVariants({
-            variant: "ghost",
-            size: "icon-lg",
-            className: "h-10 w-10",
-          })}
-        >
-          {session?.user.name && (
-            <Avatar size="sm">
-              <AvatarImage
-                src={session?.user?.image ?? undefined}
-                alt="profile Image"
-              />
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className={"w-56"} align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel className={"font-normal"}>
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-meidum leading-none">
-                  {session?.user.name}
-                </p>
-                <p className="text-xs leading-none text-neutral-400">
-                  {session?.user.email}
-                </p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <UserMenu />
-            <SignOut />
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            name={session?.user.name ?? "User Menu"}
+            className={buttonVariants({
+              variant: "ghost",
+              size: "icon-lg",
+              className: "h-10 w-10",
+            })}
+          >
+            {session?.user.name && (
+              <Avatar size="default">
+                <AvatarImage
+                  src={session?.user?.image ?? undefined}
+                  alt="profile Image"
+                />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className={"w-56"} align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className={"font-normal"}>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    {session?.user.name}
+                  </p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {session?.user.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <UserMenu />
+              <SignOut />
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <AccountDialog />
+      </Dialog>
     );
   }
 }

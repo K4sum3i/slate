@@ -35,57 +35,55 @@ export default function cardLink({
   );
 
   return (
-    <div className="flex items-center gap-[14px] px-4 py-[13px] border-b transition-[background] duration-[120ms] ease-[var(--ease-out)] animate-[in_.38s_var(--ease-out)_forwards]">
-      <div className="flex-1 min-w-0">
+    <div className="group flex items-center gap-3 px-4 py-3 transition-colors duration-150 ease-out hover:bg-muted/60">
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         <a
-          href={`/${linkInfo}`}
-          className="font-mono text-sm font-medium no-underline text-text transition-opacity duration-75 hover:opacity-80"
+          href={`/${linkInfo.slug}`}
+          className="flex items-center gap-1 font-mono text-sm font-medium text-foreground no-underline transition-opacity duration-75 hover:opacity-70"
         >
-          <span>/</span>
+          <span className="text-muted-foreground">/</span>
           {linkInfo.slug}
         </a>
         <p
-          className="text-xs text-neutral-400 truncate select-all font-mono"
+          className="truncate text-xs text-muted-foreground font-mono"
           title={linkInfo.url}
         >
           {linkInfo.url}
         </p>
       </div>
-      <div className="flex gap-1 shrink-0">
+      <div className="flex flex-wrap items-center gap-1.5">
         {linkTags.map((tag) => {
           const tagInfo = tagsInfo.find((t) => t.id === tag.tagId);
           return (
             <span
               key={tag.tagId}
-              className="text-xs font-mono px-2 py-[0.5px] rounded-full border rounded-md border-neutral-500 text-neutral-400"
+              className="rounded-full border border-border px-2 py-0.5 text-xs font-mono text-muted-foreground"
             >
               {tagInfo?.name}
             </span>
           );
         })}
       </div>
-      <div className="flex items-center gap-4 shrink-0 text-neutral-400 text-sm font-mono">
-        <span className="flex items-center gap-[5px] min-w-[64px]">
+      <div className="flex items-center gap-4 text-sm font-mono text-muted-foreground">
+        <span className="flex items-center gap-1.5">
           <ShowClick
             numberOfClicks={linkInfo.clicks}
             lastDate={linkInfo.lastClicked}
           />
         </span>
-
-        <span className="font-mono"></span>
-        <span className="w-11 text-right text-neutral-400">
+        <span className="w-11 text-right">
           {formatDate(linkInfo.createdAt)}
         </span>
       </div>
-      <div className="flex items-center gap-0.5 shrink-0 relative">
+      <div className="flex items-center gap-0.5">
         <CopyLink slug={linkInfo.slug} />
         <DropdownMenu>
           <DropdownMenuTrigger
-            className={"transition-opacity hover:opacity-75"}
+            className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <EllipsisVertical size={15} />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
+          <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => setActiveDialog("edit")}>
               <PenLine size={16} />
               <span>Edit</span>
@@ -98,8 +96,8 @@ export default function cardLink({
               onClick={() => setActiveDialog("delete")}
               variant="destructive"
             >
-              <TrashIcon className="text-destructive" size={16} />
-              <span className="text-destructive">Delete</span>
+              <TrashIcon size={16} />
+              <span>Delete</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

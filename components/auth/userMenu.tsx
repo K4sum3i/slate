@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { HomeIcon, LayoutDashboardIcon, SettingsIcon } from "lucide-react";
+import { DialogTrigger } from "../ui/dialog";
 
 export default function userMenu() {
   const iconSize = 15;
@@ -20,12 +21,12 @@ export default function userMenu() {
           <span>Dashboard</span>
         </Link>
       </DropdownMenuItem>
-      <DropdownMenuItem>
-        <Link href={"/dashboard/settings"} className="flex items-center gap-2">
+      <DialogTrigger>
+        <DropdownMenuItem>
           <SettingsIcon size={iconSize} />
           <span>Settings</span>
-        </Link>
-      </DropdownMenuItem>
+        </DropdownMenuItem>
+      </DialogTrigger>
     </>
   );
 }

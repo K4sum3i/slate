@@ -200,9 +200,9 @@ export default function CreateLink({
                 tags={tags}
               />
             ) : (
-              <div className="flex items-center justify-center space-x-2 rounded-md border-neutral-200 py-3 text-sm dark:border-neutral-800">
+              <div className="flex items-center justify-center space-x-2 rounded-md border border-border py-3 text-sm">
                 <TagsIcon size={16} />
-                <p className="font-medium">You dont have any tag bd</p>
+                <p className="font-medium">You don't have any tags yet</p>
               </div>
             )}
           </div>
@@ -213,7 +213,7 @@ export default function CreateLink({
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading ? <Spinner /> : <RocketIcon size={16} />}
-                <span>{loading ? "Creating..." : "Create Tag"}</span>
+                <span>{loading ? "Creating..." : "Create link"}</span>
               </Button>
             </DialogClose>
           </DialogFooter>
