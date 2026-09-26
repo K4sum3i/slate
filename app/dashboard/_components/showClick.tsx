@@ -10,23 +10,18 @@ import { BarChartIcon } from "lucide-react";
 export default function showClick({
   numberOfClicks,
   lastDate,
-  className,
 }: {
   numberOfClicks: number;
   lastDate: Date | null;
-  className?: string;
 }) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger
-          className={cn(
-            "flex cursor-default items-center space-x-2 text-xs",
-            className,
-          )}
-        >
-          <BarChartIcon size={14} />
-          <span className="font-mono">{numberOfClicks} clicks</span>
+        <TooltipTrigger className={"cursor-default items-center text-xs"}>
+          <span className="flex items-center gap-[5px] min-w-[64px] font-mono">
+            <BarChartIcon size={14} />
+            {numberOfClicks} clicks
+          </span>
         </TooltipTrigger>
         <TooltipContent sideOffset={5}>
           {lastDate ? (

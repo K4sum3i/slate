@@ -30,11 +30,13 @@ export default async function userBtn() {
       <Link
         href={"/dashboard"}
         className={buttonVariants({
-          variant: "outline",
-          className: "group",
+          variant: "secondary",
+          size: "lg",
+          className:
+            "group inline-flex items-center justify-center space-x-3 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-700 focus-visible:ring-neutral-500 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:hover:border-neutral-700/50 h-9 px-4 py-2",
         })}
       >
-        <span>Get Started</span>
+        <span className="text-sm">Get Started</span>
         <ArrowRight className="ml-2 h-4 w-4 transform transition-transform group-hover:translate-x-[2px]" />
       </Link>
     );
@@ -46,11 +48,12 @@ export default async function userBtn() {
           name={session?.user.name ?? "User Menu"}
           className={buttonVariants({
             variant: "ghost",
-            size: "icon",
+            size: "icon-lg",
+            className: "h-10 w-10",
           })}
         >
           {session?.user.name && (
-            <Avatar>
+            <Avatar size="sm">
               <AvatarImage
                 src={session?.user?.image ?? undefined}
                 alt="profile Image"

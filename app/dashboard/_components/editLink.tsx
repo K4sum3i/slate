@@ -39,7 +39,7 @@ export default function editLink({
   allTags: Tags[];
 }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  const [, setOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [isError, setError] = useState<boolean>(false);
   const [unlockSlug, setUnlockSlug] = useState<boolean>(true);

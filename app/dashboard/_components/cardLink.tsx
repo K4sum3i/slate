@@ -1,33 +1,25 @@
+"use client";
+
 import { Links, LinksTags, Tags } from "@/app/generated/prisma/client";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { EllipsisVertical, PenLine, QrCodeIcon, TrashIcon } from "lucide-react";
+import { Dialog } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils/formatDate";
-import { cn } from "cn";
-import {
-  ChevronDownIcon,
-  EllipsisVertical,
-  PenLine,
-  QrCodeIcon,
-  TrashIcon,
-} from "lucide-react";
 import CopyLink from "./copyLink";
 import CopyQR from "./copyQR";
 import EditLink from "./editLink";
 import DeleteLink from "./deleteLink";
 import ShowClick from "./showClick";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { formatDate } from "@/lib/utils/formatDate";
 
-export default function CardLink({
+type DialogAction = "edit" | "qr" | "delete" | null;
+
+export default function cardLink({
   linkInfo,
   linkTags,
   tagsInfo,
@@ -36,115 +28,96 @@ export default function CardLink({
   linkTags: LinksTags[];
   tagsInfo: Tags[];
 }) {
+  const [activeDialog, setActiveDialog] = useState<DialogAction>(null);
+
   const cardTagsInfo = tagsInfo.filter((tag) =>
     linkTags.some((linkTag) => linkTag.tagId === tag.id),
   );
 
   return (
-    <div className="flex w-full flex-col rounded-md border border-neutral p-3 shadow-sm dark:border-neutral-800">
-      <div className="mb-1 flex w-full items-center justify-between space-x-2">
+    <div className="flex items-center gap-[14px] px-4 py-[13px] border-b transition-[background] duration-[120ms] ease-[var(--ease-out)] animate-[in_.38s_var(--ease-out)_forwards]">
+      <div className="flex-1 min-w-0">
         <a
-          href={`/${linkInfo.slug}`}
-          className="block space-x-[1px] overflow-hidden truncate font-medium transition-opacity duration-75 hover:opacity-80"
+          href={`/${linkInfo}`}
+          className="font-mono text-sm font-medium no-underline text-text transition-opacity duration-75 hover:opacity-80"
         >
-          <span className="text-sm opacity-40">/</span>
-          <span>{linkInfo.slug}</span>
+          <span>/</span>
+          {linkInfo.slug}
         </a>
-        <div className="flex items-center space-x-3">
+        <p
+          className="text-xs text-neutral-400 truncate select-all font-mono"
+          title={linkInfo.url}
+        >
+          {linkInfo.url}
+        </p>
+      </div>
+      <div className="flex gap-1 shrink-0">
+        {linkTags.map((tag) => {
+          const tagInfo = tagsInfo.find((t) => t.id === tag.tagId);
+          return (
+            <span
+              key={tag.tagId}
+              className="text-xs font-mono px-2 py-[0.5px] rounded-full border rounded-md border-neutral-500 text-neutral-400"
+            >
+              {tagInfo?.name}
+            </span>
+          );
+        })}
+      </div>
+      <div className="flex items-center gap-4 shrink-0 text-neutral-400 text-sm font-mono">
+        <span className="flex items-center gap-[5px] min-w-[64px]">
           <ShowClick
             numberOfClicks={linkInfo.clicks}
             lastDate={linkInfo.lastClicked}
-            className="hidden border-r border-neutral-200 pr-2 dark:border-neutral-800 md:flex"
           />
-          <CopyLink slug={linkInfo.slug} />
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                className={"transition-opacity hover:opacity-75"}
-              >
-                <EllipsisVertical size={15} />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DialogTrigger>
-                  <DropdownMenuItem>
-                    <PenLine size={16} />
-                    <span>Edit</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <QrCodeIcon size={15} />
-                    <span>Copy QR Code</span>
-                  </DropdownMenuItem>
-                </DialogTrigger>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <CopyQR linkInfo={linkInfo} />
+        </span>
+
+        <span className="font-mono"></span>
+        <span className="w-11 text-right text-neutral-400">
+          {formatDate(linkInfo.createdAt)}
+        </span>
+      </div>
+      <div className="flex items-center gap-0.5 shrink-0 relative">
+        <CopyLink slug={linkInfo.slug} />
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={"transition-opacity hover:opacity-75"}
+          >
+            <EllipsisVertical size={15} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={() => setActiveDialog("edit")}>
+              <PenLine size={16} />
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setActiveDialog("qr")}>
+              <QrCodeIcon size={15} />
+              <span>Copy QR Code</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setActiveDialog("delete")}
+              variant="destructive"
+            >
+              <TrashIcon className="text-destructive" size={16} />
+              <span className="text-destructive">Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Dialog
+          open={activeDialog !== null}
+          onOpenChange={(open) => !open && setActiveDialog(null)}
+        >
+          {activeDialog === "qr" && <CopyQR linkInfo={linkInfo} />}
+          {activeDialog === "edit" && (
             <EditLink
               link={linkInfo}
               linkTags={cardTagsInfo}
               allTags={tagsInfo}
             />
-            <DeleteLink link={linkInfo} />
-          </Dialog>
-        </div>
-      </div>
-      <p
-        className="mb-2 truncate select-all font-mono text-sm text-neutral-500 dark:text-neutral-400"
-        title={linkInfo.url}
-      >
-        {linkInfo.url}
-      </p>
-      <Collapsible>
-        <div className="flex items-center justify-between font-mono text-xs font-medium text-neutral-600 dark:text-neutral-400 md:space-x-2">
-          <div className="flex max-w-[75%] items-center space-x-2">
-            {linkTags.map((tag) => {
-              const tagInfo = tagsInfo.find((t) => t.id === tag.tagId);
-              return (
-                <span
-                  key={tag.tagId}
-                  className={cn(
-                    "rounded-md border border-neutral-200 px-2 py-[0.5px] font-mono text-xs dark:border-neutral-500",
-                  )}
-                >
-                  {tagInfo?.name}
-                </span>
-              );
-            })}
-            <p
-              className="hidden truncate md:block"
-              title={linkInfo.description ?? ""}
-            >
-              {linkInfo.description ?? ""}
-            </p>
-            <CollapsibleTrigger
-              className={
-                "flex items-center transition-colors hover:text-neutral-900 dark:hover:text-white md:hidden"
-              }
-            >
-              <ChevronDownIcon size={14} className="mr-2" />
-              <span>Info</span>
-            </CollapsibleTrigger>
-          </div>
-          <p>{formatDate(linkInfo.createdAt)}</p>
-        </div>
-        <CollapsibleContent className={"flex flex-col"}>
-          <div className="my-2 p-2 shadow-sm">
-            <ShowClick
-              numberOfClicks={linkInfo.clicks}
-              lastDate={linkInfo.lastClicked}
-            />
-          </div>
-          {linkInfo.description && (
-            <div className="p-2 shadow-sm">
-              <p
-                className="text-pretty text-sm"
-                title={linkInfo.description ?? ""}
-              >
-                {linkInfo.description}
-              </p>
-            </div>
           )}
-        </CollapsibleContent>
-      </Collapsible>
+          {activeDialog === "delete" && <DeleteLink link={linkInfo} />}
+        </Dialog>
+      </div>
     </div>
   );
 }

@@ -6,7 +6,6 @@ import CreateLink from "./_components/createLink";
 import { PackageOpenIcon, PlusIcon, SparklesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardLink from "./_components/cardLink";
-import Prueba from "./_components/prueba";
 import UserBlocked from "@/components/settings/userBlocked";
 
 export default async function Dashboardpage({
@@ -61,7 +60,7 @@ export default async function Dashboardpage({
           )}
         </div>
       </header>
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-2">
+      <div className="border rounded-md overflow-hidden">
         {filteredLinks
           .sort((a, b) => {
             return (
@@ -71,24 +70,6 @@ export default async function Dashboardpage({
           .map((link) => {
             return (
               <CardLink
-                key={link.id}
-                linkInfo={link}
-                linkTags={link.tags}
-                tagsInfo={data.tags}
-              />
-            );
-          })}
-      </div>
-      <div className="">
-        {filteredLinks
-          .sort((a, b) => {
-            return (
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
-          })
-          .map((link) => {
-            return (
-              <Prueba
                 key={link.id}
                 linkInfo={link}
                 linkTags={link.tags}

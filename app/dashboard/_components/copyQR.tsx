@@ -41,7 +41,7 @@ export default function copyQR({ linkInfo }: { linkInfo: Links }) {
         ctx!.drawImage(img, 0, 0);
         const pngFile = canvas.toDataURL("image/png");
         const downloadLink = document.createElement("a");
-        downloadLink.download = `${linkInfo.slug}_slate_app.svg`;
+        downloadLink.download = `${linkInfo.slug}_slate_app.png`;
         downloadLink.href = pngFile;
         downloadLink.click();
       };
@@ -61,7 +61,7 @@ export default function copyQR({ linkInfo }: { linkInfo: Links }) {
             id="qr-code"
             size={128}
             style={{ height: "auto" }}
-            values={`http://localhost:3000/${linkInfo.slug}`}
+            value={`http://localhost:3000/${linkInfo.slug}`}
             viewBox={`0 0 128 128`}
           />
         </div>
