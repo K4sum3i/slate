@@ -21,12 +21,12 @@ export default function userMenu() {
           <span>Dashboard</span>
         </Link>
       </DropdownMenuItem>
-      <DialogTrigger>
-        <DropdownMenuItem>
+      <DropdownMenuItem>
+        <DialogTrigger className={"flex items-center gap-2"}>
           <SettingsIcon size={iconSize} />
           <span>Settings</span>
-        </DropdownMenuItem>
-      </DialogTrigger>
+        </DialogTrigger>
+      </DropdownMenuItem>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { getLinksAndTagsByUser } from "@/lib/queries";
-import Searchlinks from "./_components/links";
+import Searchlinks from "./_components/searchLinks";
 import LinksLimit from "./_components/linksLimit";
 import SearchTag from "./_components/searchTag";
 import CreateLink from "./_components/createLink";
@@ -11,14 +11,17 @@ import UserBlocked from "@/components/settings/userBlocked";
 export default async function Dashboardpage({
   searchParams,
 }: {
-  searchParams?: {
+  searchParams: Promise<{
     search?: string;
     tag?: string;
-  };
+  }>;
 }) {
+  const params = await searchParams;
+
   const data = await getLinksAndTagsByUser();
-  const searchLink = searchParams?.search;
-  const searchTag = searchParams?.tag;
+
+  const searchLink = params.search;
+  const searchTag = params.tag;
 
   if (!data) return <div>ERROR</div>;
   if (!data?.links) return <div>ERROR</div>;
