@@ -37,9 +37,10 @@ export default async function AccountDialog() {
               <p className="text-xs/relaxed text-balance text-muted-foreground">
                 Download all your shortened links and their information.
               </p>
-              <ExportAllLinks />
             </div>
+            <ExportAllLinks />
           </section>
+
           <section className="py-5">
             <div className="space-y-1 rounded-lg border border-destructive/20 bg-destructive/5 p-4 dark:bg-destructive/10">
               <h3 className="text-xs font-medium text-destructive">

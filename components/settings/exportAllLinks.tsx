@@ -1,13 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { DownloadIcon } from "lucide-react";
+
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-import { useState } from "react";
 import { downloadAllLinks } from "@/lib/actions/links";
 import { toast } from "../ui/toast";
 
-export default function exportAllLinks() {
+export default function ExportAllLinks() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDownloadLinks = async () => {
@@ -38,8 +39,13 @@ export default function exportAllLinks() {
   };
 
   return (
-    <Button onClick={handleDownloadLinks} disabled={loading}>
-      {loading ? <Spinner /> : <DownloadIcon size={14} />}
+    <Button
+      variant="outline"
+      onClick={handleDownloadLinks}
+      disabled={loading}
+      className="mt-1 active:scale-[0.98] motion-reduce:active:scale-100"
+    >
+      {loading ? <Spinner /> : <DownloadIcon />}
       <span>{loading ? "Exporting..." : "Export all links"}</span>
     </Button>
   );
