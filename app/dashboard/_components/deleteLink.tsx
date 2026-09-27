@@ -5,10 +5,8 @@ import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Dialog,
   DialogContent,
   DialogHeader,
-  DialogTrigger,
   DialogDescription,
   DialogTitle,
   DialogFooter,
@@ -18,7 +16,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { DeleteLinkSchema } from "@/lib/schemas";
 import { Spinner } from "@/components/ui/spinner";
 import { TrashIcon } from "lucide-react";
