@@ -3,6 +3,7 @@ import { GitHub } from "../icons/logos";
 import CommandK from "@/components/commandK/index";
 import UserBtn from "@/components/auth/userBtn";
 import ModeToggle from "@/components/ChangeTheme";
+import { buttonVariants } from "../ui/button";
 
 export default function header() {
   return (
@@ -24,7 +25,11 @@ export default function header() {
         <div className="flex items-center gap-1">
           <Link
             href={"https://github.com/K4sum3i/slate"}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background transition-colors hover:bg-muted hover:text-foreground dark:border-neutral-800 dark:hover:bg-neutral-800 dark:hover:text-neutral-50"
+            className={buttonVariants({
+              variant: "ghost",
+              size: "icon-lg",
+              className: "h-9 w-9",
+            })}
             aria-label="GitHub Repository"
           >
             <GitHub width={20} name="Github Repository" />

@@ -2,7 +2,6 @@ import { buttonVariants } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "cn";
@@ -15,49 +14,44 @@ export default function linksLimit({
   userLinks: number;
   maxLinks: number;
 }) {
-  const max = userLinks >= maxLinks;
-  const mid = userLinks >= maxLinks / 2;
+  const ratio = maxLinks > 0 ? Math.min(userLinks / maxLinks, 1) : 0;
+  const atLimit = userLinks >= maxLinks;
+  const nearLimit = !atLimit && ratio >= 0.8;
 
   return (
-    <TooltipProvider delay={500}>
-      <Tooltip>
-        <TooltipTrigger>
-          <div
-            className={buttonVariants({
-              variant: "outline",
-              className: "cursor-default font-mono shadow-none",
-            })}
-          >
-            <div
-              className={cn(
-                mid ? "text-yellow-500" : "",
-                max ? "text-red-500" : "",
-                "flex items-center space-x-2",
-              )}
-            >
-              {max ? (
-                <TriangleAlertIcon size={14} />
-              ) : (
-                <PackageIcon size={14} />
-              )}
-              <span>
-                {userLinks < 10 ? `0${userLinks}` : userLinks}
-                {"/"}
-                {maxLinks < 10 ? `0${maxLinks}` : maxLinks}
-              </span>
-            </div>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          {max ? (
-            <p>You have reached the maximum limit of {maxLinks} links.</p>
-          ) : (
-            <p>
-              You have created {userLinks} out of {maxLinks} links.
-            </p>
+    <Tooltip>
+      <TooltipTrigger className="inline-flex h-8 cursor-default items-center gap-2.5 rounded-md border border-border px-2.5 font-mono text-xs tabular-nums outline-none transition-colors duration-100 hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring/40">
+        <span
+          className={cn(
+            atLimit && "text-destructive",
+            nearLimit && "text-amber-600 dark:text-amber-400",
           )}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        >
+          {userLinks}/{maxLinks}
+        </span>
+        <span
+          role="meter"
+          className="h-1 w-10 overflow-hidden rounded-full bg-muted"
+        >
+          <span
+            className={cn(
+              "block h-full origin-left rounded-full bg-foreground/70 transition-transform duration-300 ease-(--ease-out) motion-reduce:transition-none",
+              nearLimit && "bg-amber-500",
+              atLimit && "bg-destructive",
+            )}
+            style={{ transform: `scaleX(${ratio})` }}
+          />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent>
+        {atLimit ? (
+          <p>You have reached the maximum limit of {maxLinks} links.</p>
+        ) : (
+          <p>
+            You have created {userLinks} out of {maxLinks} links.
+          </p>
+        )}
+      </TooltipContent>
+    </Tooltip>
   );
 }

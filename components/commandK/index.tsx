@@ -10,6 +10,7 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandShortcut,
 } from "../ui/command";
 import { ChangeTheme, Pages } from "./items";
 import { useEffect, useState } from "react";
@@ -24,15 +25,30 @@ export default function commandK() {
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case "k":
+            e.preventDefault();
+            setOpen((open) => !open);
+            break;
+
+          case "l":
+            e.preventDefault();
+            setTheme("light");
+            break;
+
+          case "d":
+            e.preventDefault();
+            setTheme("dark");
+            break;
+        }
       }
     };
 
     document.addEventListener("keydown", down);
+
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [setTheme]);
 
   const handleRoutePush = async (href: string) => {
     router.push(href);
@@ -85,7 +101,16 @@ export default function commandK() {
                   onSelect={() => handleChangeTheme(theme.param)}
                 >
                   <theme.icon size={22} strokeWidth={1.5} />
+
                   <span>{theme.name}</span>
+
+                  {theme.param === "light" && (
+                    <CommandShortcut>⌘L</CommandShortcut>
+                  )}
+
+                  {theme.param === "dark" && (
+                    <CommandShortcut>⌘D</CommandShortcut>
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>

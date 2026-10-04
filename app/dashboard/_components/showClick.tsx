@@ -1,12 +1,13 @@
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/utils/formatDate";
-import { cn } from "cn";
-import { BarChartIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const compact = new Intl.NumberFormat("en", { notation: "compact" });
+
 export default function showClick({
   numberOfClicks,
   lastDate,
@@ -15,22 +16,26 @@ export default function showClick({
   lastDate: Date | null;
 }) {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className={"cursor-default items-center text-xs"}>
-          <span className="flex items-center gap-[5px] min-w-[64px] font-mono">
-            <BarChartIcon size={14} />
-            {numberOfClicks} clicks
-          </span>
-        </TooltipTrigger>
-        <TooltipContent sideOffset={5}>
-          {lastDate ? (
-            <p>Last clicked: {formatDate(lastDate)}</p>
-          ) : (
-            <p>No clicks yet</p>
+    <Tooltip>
+      <TooltipTrigger className="cursor-default rounded-sm font-mono text-xs tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-ring/40 md:text-right">
+        <span
+          className={cn(
+            numberOfClicks > 0 ? "text-foreground" : "text-muted-foreground",
           )}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        >
+          {compact.format(numberOfClicks)}
+        </span>{" "}
+        <span className="text-muted-foreground">
+          {numberOfClicks === 1 ? "click" : "clicks"}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={5}>
+        {lastDate ? (
+          <p>Last clicked {formatDate(lastDate)} ago</p>
+        ) : (
+          <p>No clicks yet</p>
+        )}
+      </TooltipContent>
+    </Tooltip>
   );
 }

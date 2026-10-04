@@ -12,18 +12,20 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CreateLinkSchema } from "@/lib/schemas";
 import { Tags } from "@/app/generated/prisma/client";
-import { RocketIcon, ShuffleIcon, TagsIcon } from "lucide-react";
+import { PlusIcon, ShuffleIcon, TagsIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import SelectedTags from "./selectedTags";
 import { toast } from "@/components/ui/toast";
 import { checkIfSlugExist, createLink } from "@/lib/actions/links";
+import { cn } from "@/lib/utils";
 
 export default function CreateLink({
   children,
@@ -36,8 +38,6 @@ export default function CreateLink({
 }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [isError, setError] = useState<boolean>(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof CreateLinkSchema>>({
@@ -71,8 +71,6 @@ export default function CreateLink({
   const onSubmit = async (values: z.infer<typeof CreateLinkSchema>) => {
     if (values.slug === values.url) {
       setLoading(false);
-      setError(true);
-      setMessage("The URL and the slug cannot be the same");
       return;
     }
 
@@ -90,18 +88,15 @@ export default function CreateLink({
 
       const result = await createLink(values, selectedTags);
 
-      if (result.error && result.limit) {
+      if (result.error) {
         toast.add({
-          type: "info",
+          type: result.limit ? "info" : "error",
           description: `${result.error}`,
         });
         return;
       }
 
-      toast.add({
-        type: "success",
-        description: "Creation link disabled for now",
-      });
+      toast.add({ type: "success", description: "Link created" });
       form.reset();
       setSelectedTags([]);
       setOpen(false);
@@ -113,109 +108,143 @@ export default function CreateLink({
       });
       console.error(error);
     } finally {
-      setError(false);
-      setMessage("");
       setLoading(false);
     }
   };
 
-  const handleGenerateRandomSlug = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const randomSlug = Math.random().toString(36).substring(7);
-    form.setValue("slug", randomSlug);
+  const handleGenerateRandomSlug = () => {
+    const randomSlug = Math.random().toString(36).substring(2, 8);
+    form.setValue("slug", randomSlug, { shouldValidate: true });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            variant={"outline"}
+            size="lg"
+            className={cn(
+              "active:scale-[0.97] motion-reduce:active:scale-100",
+              "h-8 px-3",
+            )}
+          />
+        }
+      >
+        <PlusIcon size={16} />
+        <span className="max-w-[16ch] truncate sm:max-w-[28ch]">
+          {children}
+        </span>
+      </DialogTrigger>
       <DialogContent>
-        <DialogHeader className="mb-2">
-          <DialogTitle>Create new link</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>New link</DialogTitle>
+          <DialogDescription>
+            Paste a description and pick a short slug for it.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-5">
-            <FieldGroup>
-              <Controller
-                name="url"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Destination URL:</FieldLabel>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <FieldGroup>
+            <Controller
+              name="url"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Destination URL</FieldLabel>
+                  <Input
+                    {...field}
+                    type="url"
+                    inputMode="url"
+                    disabled={loading}
+                    autoComplete="off"
+                    placeholder="https://"
+                    className="h-8 font-mono"
+                  />
+                </Field>
+              )}
+            />
+            <Controller
+              name="slug"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Short link</FieldLabel>
+                  <div className="relative">
                     <Input
                       {...field}
                       disabled={loading}
                       autoComplete="off"
-                      placeholder="https://"
+                      spellCheck={false}
+                      placeholder="my-link"
+                      className="h-8 pr-24 font-mono"
                     />
-                  </Field>
-                )}
-              />
-              <Controller
-                name="slug"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Short link:</FieldLabel>
-                    <div className="relative flex items-center">
-                      <Input
-                        {...field}
-                        disabled={loading}
-                        autoComplete="off"
-                        placeholder="mylink"
-                      />
-                      <Button
-                        onClick={handleGenerateRandomSlug}
-                        variant={"outline"}
-                        className={
-                          "absolute right-0 rounded-none rounded-br-md rounded-tr-md"
-                        }
-                      >
-                        <ShuffleIcon size={14} />
-                        <span>Randomize</span>
-                      </Button>
-                    </div>
-                  </Field>
-                )}
-              />
-              <Controller
-                name="description"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Description (optional):</FieldLabel>
-                    <Input
-                      {...field}
-                      disabled={loading}
-                      placeholder="Enter a description"
-                    />
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-            {tags.length > 0 ? (
-              <SelectedTags
-                selectedTags={selectedTags}
-                onSelectTag={handleAddTags}
-                onDeleteTag={handleDeleteTag}
-                tags={tags}
-              />
-            ) : (
-              <div className="flex items-center justify-center space-x-2 rounded-md border border-border py-3 text-sm">
-                <TagsIcon size={16} />
-                <p className="font-medium">You don't have any tags yet</p>
-              </div>
-            )}
-          </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={handleGenerateRandomSlug}
+                      variant={"ghost"}
+                      className={cn(
+                        "active:scale-[0.97] motion-reduce:active:scale-100",
+                        "absolute top-1 right-1 h-6 text-muted-foreground",
+                      )}
+                    >
+                      <ShuffleIcon />
+                      <span>Randomize</span>
+                    </Button>
+                  </div>
+                </Field>
+              )}
+            />
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>
+                    Description{" "}
+                    <span className="font-normal text-muted-foreground">
+                      (optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={loading}
+                    autoComplete="off"
+                    placeholder="Enter a description"
+                    className="h-8"
+                  />
+                </Field>
+              )}
+            />
+          </FieldGroup>
+          {tags.length > 0 ? (
+            <SelectedTags
+              selectedTags={selectedTags}
+              onSelectTag={handleAddTags}
+              onDeleteTag={handleDeleteTag}
+              tags={tags}
+            />
+          ) : (
+            <p className="flex items-center gap-2 rounded-md border border-dashed border-border px-3 py-2.5 text-xs text-muted-foreground">
+              <TagsIcon size={16} className="shrink-0" />
+              Create a tag from the Tags menu to organize your links.
+            </p>
+          )}
           <DialogFooter>
-            <DialogClose>
-              <Button variant={"ghost"} disabled={loading}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? <Spinner /> : <RocketIcon size={16} />}
-                <span>{loading ? "Creating..." : "Create link"}</span>
-              </Button>
+            <DialogClose
+              render={<Button variant={"ghost"} size="lg" disabled={loading} />}
+            >
+              Cancel
             </DialogClose>
+            <Button
+              type="submit"
+              disabled={loading}
+              size="lg"
+              className="active:scale-[0.97] motion-reduce:active:scale-100"
+            >
+              {loading ? <Spinner /> : null}
+              <span>{loading ? "Creating..." : "Create link"}</span>
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Links } from "@/app/generated/prisma/client";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import type { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -19,17 +19,24 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { DeleteLinkSchema } from "@/lib/schemas";
 import { Spinner } from "@/components/ui/spinner";
-import { TrashIcon } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { deleteLink } from "@/lib/actions/links";
 
-export default function DeleteLink({ link }: { link: Links }) {
-  const [open, setOpen] = useState<boolean>(false);
+export default function DeleteLink({
+  link,
+  onDone,
+}: {
+  link: Links;
+  onDone?: () => void;
+}) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof DeleteLinkSchema>>({
     resolver: zodResolver(DeleteLinkSchema),
   });
+
+  const typedSlug = useWatch({ control: form.control, name: "slug" });
+  const confirmed = typedSlug === link.slug;
 
   const handleDelete = async (values: z.infer<typeof DeleteLinkSchema>) => {
     if (values.slug !== link.slug) {
@@ -43,7 +50,7 @@ export default function DeleteLink({ link }: { link: Links }) {
     try {
       setLoading(true);
       await deleteLink(link.id);
-      setOpen(false);
+      onDone?.();
       toast.add({
         type: "success",
         title: "Link deleted successfully.",
@@ -61,14 +68,16 @@ export default function DeleteLink({ link }: { link: Links }) {
   };
   return (
     <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Delete /{link.slug}</DialogTitle>
-        <DialogDescription className={"text-red-500 dark:text-red-400"}>
-          Access to the link will be permanently removed. This action cannot be
-          undone.
+      <DialogHeader className="overflow-hidden">
+        <DialogTitle className="truncate">
+          Delete <span className="font-mono">/{link.slug}</span>
+        </DialogTitle>
+        <DialogDescription>
+          Anyone using this link will lose access, and its click history is gone
+          for good. This can&apos;t be undone.
         </DialogDescription>
       </DialogHeader>
-      <form onSubmit={form.handleSubmit(handleDelete)}>
+      <form onSubmit={form.handleSubmit(handleDelete)} className="space-y-5">
         <FieldGroup>
           <Controller
             name="slug"
@@ -76,23 +85,34 @@ export default function DeleteLink({ link }: { link: Links }) {
             render={({ field }) => (
               <Field>
                 <FieldLabel>
-                  Type{" "}
-                  <span className="font-mono">{link.slug} to confirm:</span>
+                  Type <span className="font-mono">{link.slug}</span> to confirm
                 </FieldLabel>
-                <Input {...field} disabled={loading} autoComplete="off" />
+                <Input
+                  {...field}
+                  disabled={loading}
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="h-8 font-mono"
+                />
               </Field>
             )}
           />
         </FieldGroup>
         <DialogFooter className="mt-3">
-          <DialogClose>
-            <Button variant={"ghost"} disabled={loading}>
-              Cancel
-            </Button>
+          <DialogClose
+            render={<Button variant={"ghost"} disabled={loading} size="lg" />}
+          >
+            Cancel
           </DialogClose>
-          <Button type="submit" disabled={loading} variant={"destructive"}>
-            {loading ? <Spinner /> : <TrashIcon size={16} />}
-            <span>{loading ? "Deleting..." : "Delete"}</span>
+          <Button
+            type="submit"
+            disabled={loading || !confirmed}
+            size="lg"
+            variant={"destructive"}
+            className="active:scale-[0.97] motion-reduce:active:scale-100"
+          >
+            {loading ? <Spinner /> : null}
+            <span>{loading ? "Deleting..." : "Delete link"}</span>
           </Button>
         </DialogFooter>
       </form>

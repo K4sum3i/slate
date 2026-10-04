@@ -7,12 +7,10 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Links, Tags } from "@/app/generated/prisma/client";
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -31,18 +29,15 @@ import { toast } from "@/components/ui/toast";
 
 export default function editLink({
   link,
-  linkTags,
-  allTags,
+  onDone,
 }: {
   link: Links;
   linkTags: Tags[];
   allTags: Tags[];
+  onDone?: () => void;
 }) {
   const [loading, setLoading] = useState<boolean>(false);
-  const [, setOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [isError, setError] = useState<boolean>(false);
-  const [unlockSlug, setUnlockSlug] = useState<boolean>(true);
+  const [slugLocked, setSlugLocked] = useState<boolean>(true);
 
   const form = useForm<z.infer<typeof EditLinkSchema>>({
     resolver: zodResolver(EditLinkSchema),
@@ -57,8 +52,6 @@ export default function editLink({
   const onSubmit = async (values: z.infer<typeof EditLinkSchema>) => {
     if (values.slug === values.url) {
       setLoading(false);
-      setError(true);
-      setMessage("The URL and the slug cannot be the same");
       return;
     }
 
@@ -70,8 +63,7 @@ export default function editLink({
         title: "Link edited successfully.",
         description: `Url: https://localhost:3000/${values.slug}`,
       });
-      form.reset();
-      setOpen(false);
+      onDone?.();
     } catch (error) {
       toast.add({
         type: "error",
@@ -79,8 +71,6 @@ export default function editLink({
           "An unexpected error has occurred. Please try again later.",
       });
     } finally {
-      setError(false);
-      setMessage("");
       setLoading(false);
     }
   };
@@ -89,104 +79,132 @@ export default function editLink({
     <DialogContent>
       <DialogHeader className="overflow-hidden">
         <DialogTitle>Edit link</DialogTitle>
-        <DialogDescription className={"block truncate"}>
+        <DialogDescription className="block truncate font-mono">
           /{link.slug}
         </DialogDescription>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-5">
-            <FieldGroup>
-              <Controller
-                name="url"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Destination URL:</FieldLabel>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <FieldGroup>
+            <Controller
+              name="url"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Destination URL</FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={loading}
+                    autoComplete="off"
+                    className="h-8 font-mono"
+                  />
+                </Field>
+              )}
+            />
+            <Controller
+              name="slug"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>Short link:</FieldLabel>
+                  <div className="relative">
                     <Input
                       {...field}
-                      disabled={loading}
-                      placeholder={link.url}
+                      disabled={slugLocked || loading}
+                      autoComplete="off"
+                      spellCheck={false}
+                      className="h-8 pr-9 font-mono"
                     />
-                  </Field>
-                )}
-              />
-              <Controller
-                name="slug"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Short link:</FieldLabel>
-                    <div className="relative flex items-center">
-                      <Input
-                        {...field}
-                        disabled={unlockSlug}
-                        placeholder={link.slug}
-                      />
-                      {unlockSlug ? (
-                        <Popover>
-                          <PopoverTrigger
-                            className={
-                              "absolute bottom-0 right-0 top-0 flex items-center px-3"
-                            }
-                          >
-                            <LockIcon size={16} />
-                          </PopoverTrigger>
-                          <PopoverContent className={"max-w-72 text-sm"}>
-                            <p className="mb-2">
-                              Editing the custom link will remove access from
-                              the previous link and it will be available to
-                              everyone. Are you sure you want to continue?
-                            </p>
+                    {slugLocked ? (
+                      <Popover>
+                        <PopoverTrigger
+                          render={
                             <Button
-                              className={"w-full"}
-                              variant={"outline"}
-                              onClick={() => setUnlockSlug(false)}
-                            >
-                              <LockOpenIcon size={16} />
-                              <span>Unlock</span>
-                            </Button>
-                          </PopoverContent>
-                        </Popover>
-                      ) : (
-                        <Button
-                          className={
-                            "absolute bottom-0 right-0 top-0 flex items-center px-3"
+                              type="button"
+                              variant={"ghost"}
+                              size={"icon-sm"}
+                              className={`absolute top-1 right-1 text-muted-foreground active:scale-[0.97] motion-reduce:active:scale-100`}
+                            />
                           }
-                          type="button"
-                          onClick={() => setUnlockSlug(true)}
                         >
-                          <LockOpenIcon size={16} />
-                        </Button>
-                      )}
-                    </div>
-                  </Field>
-                )}
-              />
-              <Controller
-                name="description"
-                control={form.control}
-                render={({ field }) => (
-                  <Field>
-                    <FieldLabel>Description (optional):</FieldLabel>
-                    <Input
-                      {...field}
-                      disabled={loading}
-                      defaultValue={link.description ?? "Description"}
-                    />
-                  </Field>
-                )}
-              />
-            </FieldGroup>
-          </div>
+                          <LockIcon size={16} />
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-72 gap-3">
+                          <p className="text-xs/relaxed">
+                            Changing the short link removes access from the
+                            previous one, and anyone can claim it afterwards.
+                          </p>
+                          <Button
+                            type="button"
+                            className={
+                              "w-full active:scale-[0.97] motion-reduce:active:scale-100"
+                            }
+                            size={"lg"}
+                            variant={"outline"}
+                            onClick={() => setSlugLocked(false)}
+                          >
+                            <LockOpenIcon size={16} />
+                            <span>Unlock anyway</span>
+                          </Button>
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant={"ghost"}
+                        size={"icon-sm"}
+                        className={
+                          "absolute top-1 right-1 text-muted-foreground active:scale-[0.97] motion-reduce:active:scale-100"
+                        }
+                        onClick={() => {
+                          setSlugLocked(true);
+                          form.setValue("slug", link.slug);
+                          form.clearErrors("slug");
+                        }}
+                      >
+                        <LockOpenIcon size={16} />
+                      </Button>
+                    )}
+                  </div>
+                </Field>
+              )}
+            />
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field }) => (
+                <Field>
+                  <FieldLabel>
+                    Description{" "}
+                    <span className="font-normal text-muted-foreground">
+                      (optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    disabled={loading}
+                    defaultValue={link.description ?? "Description"}
+                    className="h-8"
+                  />
+                </Field>
+              )}
+            />
+          </FieldGroup>
           <DialogFooter>
-            <DialogClose>
-              <Button variant={"ghost"} disabled={loading}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? <Spinner /> : <SaveIcon size={16} />}
-                <span>{loading ? "Saving..." : "Save"}</span>
-              </Button>
+            <DialogClose
+              render={
+                <Button variant={"ghost"} size={"lg"} disabled={loading} />
+              }
+            >
+              Cancel
             </DialogClose>
+            <Button
+              type="submit"
+              size={"lg"}
+              disabled={loading}
+              className={"active:scale-[0.97] motion-reduce:active:scale-100"}
+            >
+              {loading ? <Spinner /> : null}
+              <span>{loading ? "Saving..." : "Save changes"}</span>
+            </Button>
           </DialogFooter>
         </form>
       </DialogHeader>
