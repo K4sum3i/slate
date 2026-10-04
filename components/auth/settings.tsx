@@ -26,9 +26,9 @@ export default async function AccountDialog() {
       <div className="max-h-[70dvh] overflow-y-auto overscroll-contain px-5 pb-5">
         <div className="divide-y divide-border">
           <UpdateName
-            name={session.user.name!}
-            username={session.user.username!}
-            email={session.user.email!}
+            name={String(session.user.name ?? "")}
+            username={String(session.user.username ?? "")}
+            email={String(session.user.email ?? "")}
           />
 
           <section className="flex flex-col items-start gap-3 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
