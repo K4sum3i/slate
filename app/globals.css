@@ -4,6 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Motion tokens. Al estar en @theme, las utilidades `ease-out`, `ease-in-out`
+   y `ease-drawer` usan estas curvas, y `transition` sin ease explícito también. */
+@theme {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -49,100 +58,148 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #1d1d1d;
-  --card: #ffffff;
-  --card-foreground: #1d1d1d;
-  --popover: #ffffff;
-  --popover-foreground: #1d1d1d;
-  --primary: #e58ddf;
-  --primary-foreground: #1d1d1d;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #1d1d1d;
-  --muted: #f5f5f5;
-  --muted-foreground: #6b6b6b;
-  --accent: #fce8f7;
-  --accent-foreground: #1d1d1d;
-  --destructive: #ef4444;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #e58ddf;
-  --chart-1: #e58ddf;
-  --chart-2: #6b6b6b;
-  --chart-3: #9a9a9a;
-  --chart-4: #4a4a4a;
-  --chart-5: #1d1d1d;
+  --plum: #381932;
+  --cream: #fff3e6;
+}
+
+:root {
+  color-scheme: light;
+  --background: var(--cream);
+  --foreground: var(--plum);
+  --card: color-mix(in oklab, white 55%, var(--cream));
+  --card-foreground: var(--plum);
+  --popover: color-mix(in oklab, white 55%, var(--cream));
+  --popover-foreground: var(--plum);
+  --primary: var(--plum);
+  --primary-foreground: var(--cream);
+  --secondary: color-mix(in oklab, var(--plum) 8%, var(--cream));
+  --secondary-foreground: var(--plum);
+  --muted: color-mix(in oklab, var(--plum) 6%, var(--cream));
+  --muted-foreground: color-mix(in oklab, var(--plum) 70%, var(--cream));
+  --accent: color-mix(in oklab, var(--plum) 12%, var(--cream));
+  --accent-foreground: var(--plum);
+  /* Rojo fuera de la paleta: un error no puede ser ciruela. 6.5:1 con texto crema. */
+  --destructive: #b3261e;
+  --border: color-mix(in oklab, var(--plum) 14%, var(--cream));
+  --input: color-mix(in oklab, var(--plum) 22%, var(--cream));
+  --ring: var(--plum);
+  --chart-1: var(--plum);
+  --chart-2: color-mix(in oklab, var(--plum) 75%, var(--cream));
+  --chart-3: color-mix(in oklab, var(--plum) 55%, var(--cream));
+  --chart-4: color-mix(in oklab, var(--plum) 40%, var(--cream));
+  --chart-5: color-mix(in oklab, var(--plum) 28%, var(--cream));
   --radius: 0.625rem;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #1d1d1d;
-  --sidebar-primary: #e58ddf;
-  --sidebar-primary-foreground: #1d1d1d;
-  --sidebar-accent: #fce8f7;
-  --sidebar-accent-foreground: #1d1d1d;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #e58ddf;
+  --sidebar: color-mix(in oklab, var(--plum) 4%, var(--cream));
+  --sidebar-foreground: var(--plum);
+  --sidebar-primary: var(--plum);
+  --sidebar-primary-foreground: var(--cream);
+  --sidebar-accent: color-mix(in oklab, var(--plum) 10%, var(--cream));
+  --sidebar-accent-foreground: var(--plum);
+  --sidebar-border: color-mix(in oklab, var(--plum) 14%, var(--cream));
+  --sidebar-ring: var(--plum);
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #141414;
-  --card-foreground: #fafafa;
-  --popover: #141414;
-  --popover-foreground: #fafafa;
-  --primary: #f0a8e0;
-  --primary-foreground: #1d1d1d;
-  --secondary: #1f1f1f;
-  --secondary-foreground: #fafafa;
-  --muted: #1f1f1f;
-  --muted-foreground: #a0a0a0;
-  --accent: #2d1a28;
-  --accent-foreground: #fafafa;
-  --destructive: #f87171;
-  --border: #262626;
-  --input: #262626;
-  --ring: #f0a8e0;
-  --chart-1: #f0a8e0;
-  --chart-2: #a0a0a0;
-  --chart-2: #707070;
-  --chart-3: #505050;
-  --chart-4: #353535;
-  --chart-5: #1d1d1d;
-  --sidebar: #141414;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #f0a8e0;
-  --sidebar-primary-foreground: #1d1d1d;
-  --sidebar-accent: #2d1a28;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #262626;
-  --sidebar-ring: #f0a8e0;
+  color-scheme: dark;
+  --ink: color-mix(in oklab, var(--plum) 60%, black);
+  --background: var(--ink);
+  --foreground: var(--cream);
+  --card: color-mix(in oklab, var(--cream) 5%, var(--ink));
+  --card-foreground: var(--cream);
+  --popover: color-mix(in oklab, var(--cream) 7%, var(--ink));
+  --popover-foreground: var(--cream);
+  --primary: var(--cream);
+  --primary-foreground: var(--plum);
+  --secondary: color-mix(in oklab, var(--cream) 10%, var(--ink));
+  --secondary-foreground: var(--cream);
+  --muted: color-mix(in oklab, var(--cream) 8%, var(--ink));
+  --muted-foreground: color-mix(in oklab, var(--cream) 70%, var(--ink));
+  --accent: color-mix(in oklab, var(--cream) 14%, var(--ink));
+  --accent-foreground: var(--cream);
+  --destructive: #ff8f85;
+  --border: color-mix(in oklab, var(--cream) 16%, var(--ink));
+  --input: color-mix(in oklab, var(--cream) 22%, var(--ink));
+  --ring: var(--cream);
+  --chart-1: var(--cream);
+  --chart-2: color-mix(in oklab, var(--cream) 75%, var(--ink));
+  --chart-3: color-mix(in oklab, var(--cream) 55%, var(--ink));
+  --chart-4: color-mix(in oklab, var(--cream) 40%, var(--ink));
+  --chart-5: color-mix(in oklab, var(--cream) 28%, var(--ink));
+  --sidebar: color-mix(in oklab, var(--cream) 3%, var(--ink));
+  --sidebar-foreground: var(--cream);
+  --sidebar-primary: var(--cream);
+  --sidebar-primary-foreground: var(--plum);
+  --sidebar-accent: color-mix(in oklab, var(--cream) 10%, var(--ink));
+  --sidebar-accent-foreground: var(--cream);
+  --sidebar-border: color-mix(in oklab, var(--cream) 14%, var(--ink));
+  --sidebar-ring: var(--cream);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
-  button:not(:disabled), [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
+
   html {
     @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    accent-color: var(--primary);
+    scrollbar-color: color-mix(in oklab, var(--foreground) 25%, transparent)
+      transparent;
   }
-}
 
-:root {
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  body {
+    @apply bg-background text-foreground;
+    caret-color: var(--ring);
+  }
+
+  /* Superficies del navegador tematizadas con la paleta. */
+  ::selection {
+    background: color-mix(in oklab, var(--foreground) 22%, transparent);
+    color: inherit;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  a,
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  ::before,
+  ::after {
+    --tw-enter-translate-x: 0 !important;
+    --tw-enter-translate-y: 0 !important;
+    --tw-enter-scale: 1 !important;
+    --tw-enter-rotate: 0 !important;
+    --tw-exit-translate-x: 0 !important;
+    --tw-exit-translate-y: 0 !important;
+    --tw-exit-scale: 1 !important;
+    --tw-exit-rotate: 0 !important;
   }
 }

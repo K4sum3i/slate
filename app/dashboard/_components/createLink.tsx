@@ -122,7 +122,6 @@ export default function CreateLink({
       <DialogTrigger
         render={
           <Button
-            variant={"outline"}
             size="lg"
             className={cn(
               "active:scale-[0.97] motion-reduce:active:scale-100",

@@ -18,7 +18,7 @@ export default function SignOut() {
   };
 
   return (
-    <DropdownMenuItem onClick={handleLogout}>
+    <DropdownMenuItem onClick={handleLogout} variant="destructive">
       <LogOut size={iconSize} />
       <span>Log Out</span>
     </DropdownMenuItem>
